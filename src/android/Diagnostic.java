@@ -497,7 +497,13 @@ public class Diagnostic extends CordovaPlugin{
             if(granted){
                 statuses.put(permission, Diagnostic.STATUS_GRANTED);
             }else{
-                boolean showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
+                boolean showRationale;
+                // Bug android 23 Android and ACCESS_BACKGROUND_LOCATION
+                if((Build.VERSION.SDK_INT <= Build.VERSION_CODES.M) && permission.equals("ACCESS_BACKGROUND_LOCATION")){
+                  showRationale = false;
+                } else {
+                  showRationale = shouldShowRequestPermissionRationale(this.cordova.getActivity(), androidPermission);
+                }
                 if(!showRationale){
                     if(isPermissionRequested(permission)){
                         statuses.put(permission, Diagnostic.STATUS_DENIED_ALWAYS);
